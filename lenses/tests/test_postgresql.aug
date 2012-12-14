@@ -63,14 +63,16 @@ test Postgresql.lns get bool_quotes =
   { "synchronize_seqscans" = "1" }
   { "standard_conforming_strings" = "fal" }
 
-(* Any other strings must be single-quoted *)
+(* Strings must be single-quoted, except if they have no special character *)
 let string_quotes = "listen_addresses = 'localhost'
+stats_temp_directory = pg_stat_tmp
 lc_messages = 'en_US.UTF-8'
 archive_command = 'tar \'quoted option\''
 search_path = '\"$user\",public'
 "
 test Postgresql.lns get string_quotes =
   { "listen_addresses" = "localhost" }
+  { "stats_temp_directory" = "pg_stat_tmp" }
   { "lc_messages" = "en_US.UTF-8" }
   { "archive_command" = "tar \'quoted option\'" }
   { "search_path" = "\"$user\",public" }
