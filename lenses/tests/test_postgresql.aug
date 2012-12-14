@@ -6,21 +6,33 @@ Module: Test_Postgresql
 module Test_Postgresql =
 
 (* "=" separator is optional *)
-let missing_equal = "fsync on"
+let missing_equal = "fsync on\n"
 test Postgresql.lns get missing_equal =
   { "fsync" = "on" }
 
 (* extra whitespace is valid anywhere *)
-let extra_whitespace = "   fsync  =    on   # trailing comment   "
+let extra_whitespace = "   fsync  =    on   # trailing comment   \n"
 test Postgresql.lns get extra_whitespace =
   { "fsync" = "on"
     { "#comment" = "trailing comment" }
   }
 
 (* no whitespace at all is also valid *)
-let no_whitespace = "fsync=on"
+let no_whitespace = "fsync=on\n"
 test Postgresql.lns get no_whitespace =
   { "fsync" = "on" }
+
+(* Some settings specify a memory or time value. [...] Valid memory units are
+   kB (kilobytes), MB (megabytes), and GB (gigabytes); valid time units are
+   ms (milliseconds), s (seconds), min (minutes), h (hours), and d (days). *)
+let numeric_suffix_quotes = "shared_buffers = 24MB
+archive_timeout = 2min
+deadlock_timeout = '1s'
+"
+test Postgresql.lns get numeric_suffix_quotes =
+  { "shared_buffers" = "24MB" }
+  { "archive_timeout" = "2min" }
+  { "deadlock_timeout" = "1s" }
 
 (* floats and ints can be single quoted or not *)
 let float_quotes = "seq_page_cost = 2.0
@@ -35,20 +47,6 @@ test Postgresql.lns get float_quotes =
   { "vacuum_freeze_min_age" = "50000000" }
   { "vacuum_freeze_table_age" = "150000000" }
   { "wal_buffers" = "-1" }
-  { }
-
-(* Some settings specify a memory or time value. [...] Valid memory units are
-   kB (kilobytes), MB (megabytes), and GB (gigabytes); valid time units are
-   ms (milliseconds), s (seconds), min (minutes), h (hours), and d (days). *)
-let numeric_suffix_quotes = "shared_buffers = 24MB
-archive_timeout = 2min
-deadlock_timeout = '1s'
-"
-test Postgresql.lns get numeric_suffix_quotes =
-  { "shared_buffers" = "24MB" }
-  { "archive_timeout" = "2min" }
-  { "deadlock_timeout" = "1s" }
-  { }
 
 (* Boolean values can be written as on, off, true, false, yes, no, 1, 0 (all
    case-insensitive) or any unambiguous prefix of these. *)
@@ -64,7 +62,6 @@ test Postgresql.lns get bool_quotes =
   { "sql_inheritance" = "on" }
   { "synchronize_seqscans" = "1" }
   { "standard_conforming_strings" = "fal" }
-  { }
 
 (* Any other strings must be single-quoted *)
 let string_quotes = "listen_addresses = 'localhost'
@@ -77,7 +74,6 @@ test Postgresql.lns get string_quotes =
   { "lc_messages" = "en_US.UTF-8" }
   { "archive_command" = "tar \'quoted option\'" }
   { "search_path" = "\"$user\",public" }
-  { }
 
 (* external files can be included more than once *)
 let include_keyword = "Include 'foo.conf'
@@ -85,10 +81,9 @@ let include_keyword = "Include 'foo.conf'
 Include 'bar.conf'
 "
 test Postgresql.lns get include_keyword =
-  { "include" = "foo.conf" }
+  { "Include" = "foo.conf" }
   { "#comment" = "can appear several times" }
-  { "include" = "bar.conf" }
-  { }
+  { "Include" = "bar.conf" }
 
 (* Variable: conf
    A full configuration file *)
