@@ -24,37 +24,34 @@ About: Examples
 module Postgresql =
   autoload xfm
 
-(* Variable: to_comment_re
-   The regexp to match the value *)
-let to_comment_re =
-     let to_comment_squote = /'[^\n']*'/
-  in let to_comment_dquote = /"[^\n"]*"/
-  in let to_comment_noquote = /[^=\n \t'"#][^\n#]*[^\n \t#]|[^\n \t'"#]/
-  in to_comment_squote | to_comment_dquote | to_comment_noquote
-
+(* View: sep
+     Key and values are separated
+     by either spaces or an equal sign *)
 let sep = del /([ \t]+)|([ \t]*=[ \t]*)/ " = "
 
-let number_re = Rx.reldecimal
+(* Variable: word_opt_quot_re
+     Strings that don't require quotes *)
+let word_opt_quot_re = /[A-Za-z][A-Za-z0-9_]*/
 
+(* View: word_opt_quot
+     Storing a <word_opt_quot_re>, with or without quotes *)
+let word_opt_quot = Quote.do_squote_opt (store word_opt_quot_re)
+
+(* Variable: number_re
+     A relative decimal number, optionally with unit *)
+let number_re = Rx.reldecimal . /[kMG]?B|[m]?s|min|h|d/?
+
+(* View: number
+     Storing <number_re>, with or without quotes *)
 let number = Quote.do_squote_opt (store number_re)
 
-let unit_re = Rx.decimal . /[kMG]?B|[m]?s|min|h|d/
-
-let unit = Quote.do_squote_opt (store unit_re)
-
-
-let boolean_re = /on|off?|t(r(ue?)?)?|f(a(l(se?)?)?)?|y(es?)?|no?/i
-(* View: boolean
-    A boolean value.
-    0 and 1 are already managed by <number> *)
-let boolean = Quote.do_squote_opt (store boolean_re)
-
-(* View: word
-     Anything other than <number>, <unit> or <boolean> *)
-let word =
+(* View: word_quot
+     Anything other than <word_opt_quot> or <number>
+     Quotes are mandatory *)
+let word_quot =
      let esc_squot = /\\\\'/
   in let no_quot = /[^#'\n]/
-  in let forbidden = number_re | unit_re | boolean_re
+  in let forbidden = word_opt_quot_re | number_re
   in let value = (no_quot|esc_squot)* - forbidden
   in Quote.do_squote (store value)
 
@@ -65,9 +62,8 @@ let entry_gen (lns:lens) =
 
 (* View: entry *)
 let entry = entry_gen number
-          | entry_gen unit
-          | entry_gen boolean
-          | entry_gen word    (* anything else *)
+          | entry_gen word_opt_quot
+          | entry_gen word_quot    (* anything else *)
 
 (* View: lns *)
 let lns = (Util.empty | Util.comment | entry)*
