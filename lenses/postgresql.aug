@@ -5,7 +5,7 @@ Module: Postgresql
 Author: Raphael Pinson <raphink@gmail.com>
 
 About: Reference
-  This lens tries to keep as close as possible to `man 5 keepalived.conf` where possible.
+  http://www.postgresql.org/docs/current/static/config-setting.html
 
 About: License
    This file is licenced under the LGPL v2+, like the rest of Augeas.
