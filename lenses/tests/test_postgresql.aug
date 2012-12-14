@@ -22,11 +22,6 @@ let no_whitespace = "fsync=on"
 test Postgresql.lns get no_whitespace =
   { "fsync" = "on" }
 
-(* keys are case-insensitive and should be normalized *)
-let mixed_case_key = "Fsync = on"
-test Postgresql.lns get mixed_case_key =
-  { "fsync" = "on" }
-
 (* floats and ints can be single quoted or not *)
 let float_quotes = "seq_page_cost = 2.0
 random_page_cost = '4.0'
