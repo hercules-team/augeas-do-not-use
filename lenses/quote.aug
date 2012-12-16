@@ -23,24 +23,36 @@ module Quote =
 let dquote = Util.del_str "\""
 
 (* Variable: dquote_opt
-     An optional double quote *)
+     An optional double quote, default to double *)
 let dquote_opt = del /"?/ "\""
+
+(* Variable: dquote_opt_ws
+     An optional double quote, default to nothing *)
+let dquote_opt_ws = del /"?/ ""
 
 (* Variable: squote
      A single quote *)
 let squote = Util.del_str "'"
 
 (* Variable: squote_opt
-     An optional single quote *)
+     An optional single quote, default to single *)
 let squote_opt = del /'?/ "'"
 
-(* Variable: quote
-     A quote, whether double or single *)
-let quote = del /["']/ "\""
+(* Variable: squote_opt_ws
+     An optional single quote, default to nothing *)
+let squote_opt_ws = del /'?/ ""
 
 (* Variable: quote
-     An optional quote, whether double or single *)
+     A quote, either double or single, default to double *)
+let quote = del /["']/ "\""
+
+(* Variable: quote_opt
+     An optional quote, either double or single, default to double *)
 let quote_opt = del /["']?/ "\""
+
+(* Variable: quote_opt_ws
+     An optional quote, either double or single, default to nothing *)
+let quote_opt_ws = del /["']?/ ""
 
 
 (* Group: QUOTING FUNCTIONS *)
@@ -53,6 +65,10 @@ let do_dquote (body:lens) =
 let do_dquote_opt (body:lens) =
   square dquote_opt body dquote_opt
 
+(* View: do_dquote_opt *)
+let do_dquote_opt_ws (body:lens) =
+  square dquote_opt_ws body dquote_opt_ws
+
 (* View: do_squote *)
 let do_squote (body:lens) =
   square squote body squote
@@ -61,6 +77,10 @@ let do_squote (body:lens) =
 let do_squote_opt (body:lens) =
   square squote_opt body squote_opt
 
+(* View: do_squote_opt_ws *)
+let do_squote_opt_ws (body:lens) =
+  square squote_opt_ws body squote_opt_ws
+
 (* View: do_quote *)
 let do_quote (body:lens) =
   square quote body quote
@@ -68,6 +88,10 @@ let do_quote (body:lens) =
 (* View: do_quote_opt *)
 let do_quote_opt (body:lens) =
   square quote_opt body quote_opt
+
+(* View: do_quote_opt_ws *)
+let do_quote_opt_ws (body:lens) =
+  square quote_opt_ws body quote_opt_ws
 
 
 (* Group: QUOTED VALUES *)
