@@ -51,11 +51,11 @@ blank spaces at line beginning & end. The value part can be optionnaly enclosed
 in single or double quotes. Comments at end-of-line ar NOT allowed by
 redis-server.
 *)
-let standard_entry =  [ indent . key k . del_ws_spc . Quote.do_quote_opt_ws (store v) . eol ]
+let standard_entry =  [ indent . key k . del_ws_spc . Quote.do_quote_opt_nil (store v) . eol ]
 
 let save = /save/
-let seconds = [ label "seconds" . Quote.do_quote_opt_ws (store Rx.integer) ]
-let keys = [ label "keys" . Quote.do_quote_opt_ws (store Rx.integer) ]
+let seconds = [ label "seconds" . Quote.do_quote_opt_nil (store Rx.integer) ]
+let keys = [ label "keys" . Quote.do_quote_opt_nil (store Rx.integer) ]
 (* View: save_entry
 Entries identified by the "save" keyword can be found more than once. They have
 2 mandatory parameters, both integers. The same rules as standard_entry apply
@@ -64,8 +64,8 @@ for quoting, comments and whitespaces.
 let save_entry = [ indent . key save . del_ws_spc . seconds . del_ws_spc . keys . eol ]
 
 let slaveof = /slaveof/
-let ip = [ label "ip" . Quote.do_quote_opt_ws (store Rx.ip) ]
-let port = [ label "port" . Quote.do_quote_opt_ws (store Rx.integer) ]
+let ip = [ label "ip" . Quote.do_quote_opt_nil (store Rx.ip) ]
+let port = [ label "port" . Quote.do_quote_opt_nil (store Rx.integer) ]
 (* View: slaveof_entry
 Entries identified by the "slaveof" keyword can be found more than once. They
 have 2 mandatory parameters, the 1st one is an IP address, the 2nd one is a
@@ -75,8 +75,8 @@ whitespaces.
 let slaveof_entry = [ indent . key slaveof . del_ws_spc . ip . del_ws_spc . port . eol ]
 
 let renamecmd = /rename-command/
-let from = [ label "from" . Quote.do_quote_opt_ws (store Rx.word) ]
-let to = [ label "to" . Quote.do_quote_opt_ws (store Rx.word) ]
+let from = [ label "from" . Quote.do_quote_opt_nil (store Rx.word) ]
+let to = [ label "to" . Quote.do_quote_opt_nil (store Rx.word) ]
 (* View: save_entry
 Entries identified by the "rename-command" keyword can be found more than once.
 They have 2 mandatory parameters, both strings. The same rules as
