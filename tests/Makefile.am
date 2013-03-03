@@ -22,6 +22,7 @@ lens_tests =			\
   lens-anacron.sh		\
   lens-approx.sh		\
   lens-apt_update_manager.sh		\
+  lens-aptcacherngsecurity.sh		\
   lens-aptpreferences.sh	\
   lens-aptconf.sh	\
   lens-aptsource.sh		\
