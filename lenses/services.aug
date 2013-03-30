@@ -48,7 +48,7 @@ let comment_or_eol = Util.comment_or_eol
 let empty       = Util.empty
 let protocol_re = /[a-zA-Z]+/
 let word_re     = /[a-zA-Z0-9_.+*\/-]+/
-let num_re      = /[0-9]+/
+let port_re     = /[0-9]+(-[0-9]+)?/
 
 (* Group: Separators *)
 let sep_spc = Util.del_ws_spc
@@ -59,7 +59,7 @@ let sep_spc = Util.del_ws_spc
  *************************************************************************)
 
 (* View: port *)
-let port = [ label "port" . store num_re ]
+let port = [ label "port" . store port_re ]
 
 (* View: port_range *)
 let port_range = [ label "start" . store num_re ]
