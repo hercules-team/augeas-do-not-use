@@ -1,10 +1,22 @@
-(*                                                          *)
-(* Sip_Conf module for Augeas                               *)
-(* Author: Rob Tucker <rtucker@mozilla.com>                 *)
-(* Much help from : Raphael Pinson <raphink@gmail.com>      *)
-(* Based Off PHP lens by Raphael Pinson <raphink@gmail.com> *)
-(*                                                          *)
-(*                                                          *)
+(*
+Module: Sip_conf
+Parses /etc/asterisk/sip.conf
+
+Author: Rob Tucker <rtucker@mozilla.com>
+
+About: Reference
+Lens parses the sip.conf with support for template structure
+
+About: License
+This file is licenced under the LGPL v2+, like the rest of Augeas.
+
+About: Lens Usage
+To be documented
+
+About: Configuration files
+This lens applies to /etc/asterisk/sip.conf
+See <filter>.
+*)
 
 module Sip_Conf =
   autoload xfm

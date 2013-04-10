@@ -149,6 +149,7 @@ lens_tests =			\
   lens-shellvars_list.sh	\
   lens-simplelines.sh	\
   lens-simplevars.sh	\
+  lens-sip_conf.sh	    \
   lens-slapd.sh			\
   lens-smbusers.sh			\
   lens-solaris_system.sh		\
