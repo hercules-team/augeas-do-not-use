@@ -38,33 +38,62 @@ module BBhosts =
 			     )?
 			     ]
 
+    (* DOWNTIME=[columns:]day:starttime:endtime:cause[,day:starttime:endtime:cause] *)
+    let host_test_downtime =
+          let probe = [ label "probe" . store (Rx.word | "*") ]
+      in let probes = Build.opt_list probe Sep.comma
+      in let day = [ label "day" . store (Rx.word | "*") ]
+      in let starttime = [ label "starttime" . store Rx.integer ]
+      in let endtime = [ label "endtime" . store Rx.integer ]
+      in let cause = [ label "cause" . Util.del_str "\"" . store /[^"]*/ . Util.del_str "\"" ]
+      in [ key "DOWNTIME" . Sep.equal
+          . (probes . Sep.colon)?
+          . day . Sep.colon
+          . starttime . Sep.colon
+          . endtime . Sep.colon
+          . cause
+          ]
+
     let host_test_flag_value = [ label "value" . Util.del_str ":"
                               . store Rx.word ]
 
-    let host_test_flag (kw:string) = [ store /!?/ . key kw
+    let host_test_flag (kw:regexp) = [ store /!?/ . key kw
                                      . host_test_flag_value? ]
 
     let host_test = host_test_cont "cont"
-                  | host_test_cont "contInsecure"
-                  | host_test_cont "dns"
-                  | host_test_flag "CDB"
-                  | host_test_flag "ftp"
-                  | host_test_flag "front"
-                  | host_test_flag "GTM"
-		  | host_test_flag "noping"
-		  | host_test_flag "noconn"
-		  | host_test_flag "ssh"
-		  | host_test_flag "ssh2"
-		  | host_test_flag "smtp"
-		  | host_test_flag "pop3"
-		  | host_test_flag "imap2"
-		  | host_test_flag "telnet"
+		  | host_test_cont "contInsecure"
+		  | host_test_cont "dns"
 		  | host_test_flag "BBDISPLAY"
 		  | host_test_flag "BBNET"
 		  | host_test_flag "BBPAGER"
+		  | host_test_flag "CDB"
+		  | host_test_flag "GTM"
 		  | host_test_flag "XYMON"
-                  | host_test_url
-
+		  | host_test_flag "ajp13"
+		  | host_test_flag "bbd"
+		  | host_test_flag "clamd"
+		  | host_test_flag "cupsd"
+		  | host_test_flag "front"
+		  | host_test_flag /ftps?/
+		  | host_test_flag /imap[2-4s]?/
+		  | host_test_flag /ldaps?/
+		  | host_test_flag /nntps?/
+		  | host_test_flag "noconn"
+		  | host_test_flag "nocont"
+		  | host_test_flag "noping"
+		  | host_test_flag "notrends"
+		  | host_test_flag "oratns"
+		  | host_test_flag /pop-?[2-3]?s?/
+		  | host_test_flag "qmqp"
+		  | host_test_flag "qmtp"
+		  | host_test_flag "rsync"
+		  | host_test_flag /smtps?/
+		  | host_test_flag "spamd"
+		  | host_test_flag /ssh[1-2]?/
+		  | host_test_flag /telnets?/
+		  | host_test_flag "vnc"
+		  | host_test_url
+		  | host_test_downtime
 
     let host_test_list = Build.opt_list host_test sep_spc
 

@@ -22,6 +22,10 @@ page anotherpage A new page
 group-compress My test
 192.168.0.2	myhost	# https://myurl.com:1256 noconn pop3 imap2 ssh
 192.168.0.3	myhost2 # !imap2 telnet dns
+
+group-compress DownTime
+0.0.0.0	myhost3 # DOWNTIME=fping,http:*:1800:1015:\"Frontal 01 Redirect Amazon eteint entre 18h et 10h\"
+0.0.0.0	myhost4 # ftps imaps imap4 pop-3 pop2s pop smtp smtps ssh ssh1 ssh2 telnet telnets
 "
 
    test BBhosts.lns get conf =
@@ -90,5 +94,38 @@ group-compress My test
 		{ "probes"
 		   { "imap2" = "!" }
 		   { "telnet" = "" }
-		   { "dns" = "" } } } } }
+		   { "dns" = "" } } } 
+          {}
+	  }
+	  { "group-compress" = "DownTime"
+	     { "host"
+	        { "ip" = "0.0.0.0" }
+		{ "fqdn" = "myhost3" }
+		{ "probes"
+		   { "DOWNTIME"
+		      { "probe" = "fping" }
+		      { "probe" = "http" }
+		      { "day" = "*" }
+		      { "starttime" = "1800" }
+		      { "endtime" = "1015" }
+		      { "cause" = "Frontal 01 Redirect Amazon eteint entre 18h et 10h" }
+		      } } }
+             { "host"
+                { "ip" = "0.0.0.0" }
+                { "fqdn" = "myhost4" }
+                { "probes"
+                   { "ftps" = "" } 
+                   { "imaps" = "" } 
+                   { "imap4" = "" } 
+                   { "pop-3" = "" } 
+                   { "pop2s" = "" } 
+                   { "pop" = "" } 
+                   { "smtp" = "" } 
+                   { "smtps" = "" } 
+                   { "ssh" = "" } 
+                   { "ssh1" = "" } 
+                   { "ssh2" = "" } 
+                   { "telnet" = "" } 
+                   { "telnets" = "" } 
+                } } } }
 
